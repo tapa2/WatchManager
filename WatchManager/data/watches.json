@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "brand": "Rolex",
+    "model": "Submariner",
+    "price": 8500.00,
+    "inStock": true
+  },
+  {
+    "id": 2,
+    "brand": "Omega",
+    "model": "Speedmaster",
+    "price": 5400.00,
+    "inStock": true
+  },
+  {
+    "id": 3,
+    "brand": "Casio",
+    "model": "G-Shock",
+    "price": 150.75,
+    "inStock": false
+  },
+  {
+    "id": 4,
+    "brand": "rol",
+    "model": "mm",
+    "price": 300,
+    "inStock": true
+  }
+]

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WatchManager.Views.AdvancedSearchPage"
+             BackgroundColor="#2d2d25">
+    <StackLayout Padding="20" Spacing="15">
+        <Label Text="Розширений пошук годинників" FontSize="Large" HorizontalOptions="Center" TextColor="White" />
+
+        <Label Text="Бренд" TextColor="White" />
+        <Entry x:Name="BrandEntry" BackgroundColor="#3e3e3e" TextColor="White" />
+
+        <Label Text="Мінімальна ціна" TextColor="White" />
+        <Entry x:Name="MinPriceEntry" Keyboard="Numeric" BackgroundColor="#3e3e3e" TextColor="White" />
+
+        <Label Text="Максимальна ціна" TextColor="White" />
+        <Entry x:Name="MaxPriceEntry" Keyboard="Numeric" BackgroundColor="#3e3e3e" TextColor="White" />
+
+        <Button Text="Шукати" Clicked="OnSearchClicked" BackgroundColor="#3498db" TextColor="White" />
+    </StackLayout>
+</ContentPage>

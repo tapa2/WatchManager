@@ -1,0 +1,23 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WatchManager.Views.SearchWatchesPage"
+             Title="Пошук годинників"
+             BackgroundColor="#2d2d25">
+    <ContentPage.Content>
+        <StackLayout Padding="20" Spacing="10">
+            <ListView ItemsSource="{Binding FilteredWatches}" SelectionMode="None" BackgroundColor="#3e3e3e">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Vertical" Padding="10" BackgroundColor="#3e3e3e">
+                                <Label Text="{Binding Brand}" FontSize="18" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="{Binding Model}" FontSize="14" TextColor="Gray" />
+                                <Label Text="{Binding Price, StringFormat='Ціна: {0} грн'}" FontSize="12" TextColor="Green" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

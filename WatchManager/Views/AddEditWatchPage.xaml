@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WatchManager.Views.AddEditWatchPage"
+             BackgroundColor="#2d2d25">
+    <StackLayout Padding="10" Spacing="10">
+        <Label Text="{Binding PageTitle}" FontSize="Large" HorizontalOptions="Center" TextColor="White" />
+
+        <Label Text="Бренд" TextColor="White" />
+        <Entry x:Name="BrandEntry" Text="{Binding Watch.Brand}" TextColor="White" BackgroundColor="#3e3e3e" />
+
+        <Label Text="Модель" TextColor="White" />
+        <Entry x:Name="ModelEntry" Text="{Binding Watch.Model}" TextColor="White" BackgroundColor="#3e3e3e" />
+
+        <Label Text="Ціна" TextColor="White" />
+        <Entry x:Name="PriceEntry" Text="{Binding Watch.Price}" Keyboard="Numeric" TextColor="White" BackgroundColor="#3e3e3e" />
+
+        <Label Text="Наявність" TextColor="White" />
+        <Switch x:Name="InStockSwitch" IsToggled="{Binding Watch.InStock}" />
+
+        <Button Text="Зберегти" Command="{Binding SaveCommand}" BackgroundColor="#2ecc71" TextColor="White" />
+        <Button Text="Скасувати" Command="{Binding CancelCommand}" BackgroundColor="#e74c3c" TextColor="White" />
+    </StackLayout>
+</ContentPage>

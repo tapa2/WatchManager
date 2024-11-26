@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WatchManager.Views.AboutPage"
+             BackgroundColor="#2d2d25">
+    <StackLayout Padding="20">
+        <Label Text="Про програму" FontSize="Large" HorizontalOptions="Center" TextColor="White" />
+        <Label Text="ПІБ: Тертичний Тарас" TextColor="White" />
+        <Label Text="Курс: ООП" TextColor="White" />
+        <Label Text="Група: К-26" TextColor="White" />
+        <Label Text="Рік: 2024" TextColor="White" />
+        <Label Text="Короткий опис: Це програма для бронювання готелів." 
+               Margin="0,20,0,0" TextColor="White" />
+        <Button Text="Назад" Clicked="OnBackClicked" BackgroundColor="#3498db" TextColor="White" />
+    </StackLayout>
+</ContentPage>
