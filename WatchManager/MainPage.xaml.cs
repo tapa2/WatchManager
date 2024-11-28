@@ -2,28 +2,21 @@
 using System.Text.Json;
 using WatchManager.Views;
 
-
 namespace WatchManager
 {
     public partial class MainPage : ContentPage
     {
         private WatchList watchList;
-
         private string filePath;
-
-        // Шлях до файлу за замовчуванням
-        private readonly string defaultFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Watches.json");
-
-        public ObservableCollection<Watch> Watches { get; set; }
-
+        private readonly string defaultFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "watches.json");
+        public List<Watch> Watches { get; set; }
 
         public MainPage()
         {
             InitializeComponent();
             filePath = defaultFilePath;
             LoadWatches();
-
-            BindingContext = this; // Встановлення контексту прив'язки для сторінки
+            BindingContext = this;
         }
 
         private void LoadWatches()
@@ -37,7 +30,7 @@ namespace WatchManager
                 }
                 catch (Exception ex)
                 {
-                    DisplayAlert("Помилка", $"Не вдалося завантажити дані: {ex.Message}", "OK");
+                    DisplayAlert("Error", $"Failed to load data: {ex.Message}", "OK");
                     watchList = new WatchList();
                 }
             }
@@ -46,7 +39,7 @@ namespace WatchManager
                 watchList = new WatchList();
             }
 
-            Watches = new ObservableCollection<Watch>(watchList.GetAllWatches());
+            Watches = watchList.GetAllWatches();
         }
 
         private void SaveWatchesToFile()
@@ -57,63 +50,57 @@ namespace WatchManager
             }
             catch (Exception ex)
             {
-                DisplayAlert("Помилка", $"Не вдалося зберегти дані: {ex.Message}", "OK");
+                DisplayAlert("Error", $"Failed to save data: {ex.Message}", "OK");
             }
         }
 
-        // Обробник події для вибору файлу JSON
         private async void OnChooseFileClicked(object sender, EventArgs e)
         {
             try
             {
                 var jsonFileType = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-        {
-            { DevicePlatform.iOS, new[] { "public.json" } },
-            { DevicePlatform.Android, new[] { "application/json" } },
-            { DevicePlatform.WinUI, new[] { ".json" } },
-            { DevicePlatform.macOS, new[] { "json" } }
-        });
+                {
+                    { DevicePlatform.iOS, new[] { "public.json" } },
+                    { DevicePlatform.Android, new[] { "application/json" } },
+                    { DevicePlatform.WinUI, new[] { ".json" } },
+                    { DevicePlatform.macOS, new[] { "json" } }
+                });
 
                 var result = await FilePicker.Default.PickAsync(new PickOptions
                 {
-                    PickerTitle = "Виберіть JSON файл",
+                    PickerTitle = "Select a JSON file",
                     FileTypes = jsonFileType
                 });
 
                 if (result != null)
                 {
-                    // Читання вмісту вибраного файлу
                     string fileContent = await File.ReadAllTextAsync(result.FullPath);
-
-                    // Десеріалізація JSON в об'єкти
                     var watches = JsonFileHandler.DeserializeWatches(fileContent);
 
-                    if (watches != null)
+                    if (watches != null && JsonFileHandler.IsValidWatchData(watches))
                     {
                         filePath = result.FullPath;
                         watchList = new WatchList(watches);
                         RefreshWatches();
-                        await DisplayAlert("Успіх", "Дані успішно завантажені!", "OK");
+                        await DisplayAlert("Success", "Data successfully loaded!", "OK");
                     }
                     else
                     {
-                        await DisplayAlert("Помилка", "Файл JSON містить некоректні дані.", "OK");
+                        await DisplayAlert("Error", "Invalid JSON file data.", "OK");
                     }
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Помилка", $"Не вдалося завантажити файл: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Failed to load file: {ex.Message}", "OK");
             }
         }
 
         private void RefreshWatches()
         {
-            Watches.Clear();
-            foreach (var watch in watchList.GetAllWatches())
-            {
-                Watches.Add(watch);
-            }
+            Watches = watchList.GetAllWatches();
+            BindingContext = null;
+            BindingContext = this;
         }
 
         private async void OnSaveChangesClicked(object sender, EventArgs e)
@@ -121,11 +108,11 @@ namespace WatchManager
             try
             {
                 SaveWatchesToFile();
-                await DisplayAlert("Успіх", "Зміни успішно збережені!", "OK");
+                await DisplayAlert("Success", "Changes saved successfully!", "OK");
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Помилка", $"Сталася помилка при збереженні: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Error saving changes: {ex.Message}", "OK");
             }
         }
 
@@ -133,32 +120,32 @@ namespace WatchManager
         {
             try
             {
-                string idStr = await DisplayPromptAsync("Видалити годинник", "Введіть ID годинника для видалення:");
+                string idStr = await DisplayPromptAsync("Remove Watch", "Enter the ID of the watch to remove:");
                 if (!int.TryParse(idStr, out int id) || id <= 0)
                 {
-                    await DisplayAlert("Помилка", "ID має бути додатним числовим значенням.", "OK");
+                    await DisplayAlert("Error", "ID must be a positive number.", "OK");
                     return;
                 }
 
-                var Watch = Watches.FirstOrDefault(w => w.Id == id);
-                if (Watch != null)
+                var watch = Watches.FirstOrDefault(w => w.Id == id);
+                if (watch != null)
                 {
-                    bool confirm = await DisplayAlert("Підтвердження", $"Ви дійсно хочете видалити годинник \"{Watch.Brand}\"?", "Так", "Ні");
+                    bool confirm = await DisplayAlert("Confirm", $"Do you really want to remove the watch \"{watch.Brand} {watch.Model}\"?", "Yes", "No");
                     if (!confirm) return;
 
-                    watchList.RemoveWatch(Watch.Id);
+                    watchList.RemoveWatch(watch.Id);
                     SaveWatchesToFile();
-                    await DisplayAlert("Успіх", $"Годинник \"{Watch.Brand}\" видалено успішно.", "OK");
+                    await DisplayAlert("Success", $"Watch \"{watch.Brand} {watch.Model}\" removed successfully.", "OK");
                     RefreshWatches();
                 }
                 else
                 {
-                    await DisplayAlert("Помилка", "Годинник з таким ID не знайдено.", "OK");
+                    await DisplayAlert("Error", "Watch with this ID not found.", "OK");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Помилка", $"Сталася помилка: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Error: {ex.Message}", "OK");
             }
         }
 
@@ -169,9 +156,9 @@ namespace WatchManager
                 Id = Watches.Count + 1
             };
 
-            await Navigation.PushAsync(new AddEditWatchPage(newWatch, "Додати годинник", Watch =>
+            await Navigation.PushAsync(new AddEditWatchPage(newWatch, "Add Watch", watch =>
             {
-                watchList.AddWatch(Watch);
+                watchList.AddWatch(watch);
                 SaveWatchesToFile();
                 RefreshWatches();
             }));
@@ -181,21 +168,21 @@ namespace WatchManager
         {
             try
             {
-                string idStr = await DisplayPromptAsync("Редагувати годинник", "Введіть ID годинника:");
+                string idStr = await DisplayPromptAsync("Edit Watch", "Enter the ID of the watch to edit:");
                 if (!int.TryParse(idStr, out int id))
                 {
-                    await DisplayAlert("Помилка", "ID має бути числовим значенням.", "OK");
+                    await DisplayAlert("Error", "ID must be a numeric value.", "OK");
                     return;
                 }
 
-                var Watch = Watches.FirstOrDefault(w => w.Id == id);
-                if (Watch == null)
+                var watch = Watches.FirstOrDefault(w => w.Id == id);
+                if (watch == null)
                 {
-                    await DisplayAlert("Помилка", "Годинник з таким ID не знайдено.", "OK");
+                    await DisplayAlert("Error", "Watch with this ID not found.", "OK");
                     return;
                 }
 
-                await Navigation.PushAsync(new AddEditWatchPage(Watch, "Редагувати годинник", updatedWatch =>
+                await Navigation.PushAsync(new AddEditWatchPage(watch, "Edit Watch", updatedWatch =>
                 {
                     watchList.EditWatch(updatedWatch.Id, updatedWatch);
                     SaveWatchesToFile();
@@ -204,13 +191,13 @@ namespace WatchManager
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Помилка", $"Сталася помилка: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Error: {ex.Message}", "OK");
             }
         }
 
         private async void OnAdvancedSearchClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new AdvancedSearchPage(watchList));
+            await Navigation.PushAsync(new Views.AdvancedSearchPage(watchList));
         }
 
         private async void OnAboutClicked(object sender, EventArgs e)

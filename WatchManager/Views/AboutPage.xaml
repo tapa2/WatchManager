@@ -2,15 +2,48 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WatchManager.Views.AboutPage"
-             BackgroundColor="#2d2d25">
-    <StackLayout Padding="20">
-        <Label Text="Про програму" FontSize="Large" HorizontalOptions="Center" TextColor="White" />
-        <Label Text="ПІБ: Тертичний Тарас" TextColor="White" />
-        <Label Text="Курс: ООП" TextColor="White" />
-        <Label Text="Група: К-26" TextColor="White" />
-        <Label Text="Рік: 2024" TextColor="White" />
-        <Label Text="Короткий опис: Це програма для бронювання готелів." 
-               Margin="0,20,0,0" TextColor="White" />
-        <Button Text="Назад" Clicked="OnBackClicked" BackgroundColor="#3498db" TextColor="White" />
+             BackgroundColor="#121212">
+    <ContentPage.Resources>
+        <!-- Стиль для заголовка -->
+        <Style TargetType="Label" x:Key="TitleLabelStyle">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="TextColor" Value="#FFFFFF" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Margin" Value="0,10,0,20" />
+        </Style>
+
+        <!-- Стиль для звичайного тексту -->
+        <Style TargetType="Label" x:Key="ContentLabelStyle">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="TextColor" Value="#CCCCCC" />
+            <Setter Property="Margin" Value="0,5,0,5" />
+        </Style>
+
+        <!-- Стиль для кнопки -->
+        <Style TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#3498db" />
+            <Setter Property="TextColor" Value="#FFFFFF" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Margin" Value="0,20,0,0" />
+        </Style>
+    </ContentPage.Resources>
+
+    <StackLayout Padding="20" Spacing="10">
+        <!-- Заголовок -->
+        <Label Text="Про програму" Style="{StaticResource TitleLabelStyle}" />
+
+        <!-- Контент -->
+        <Label Text="ПІБ: Тертичний Тарас Юрійович" Style="{StaticResource ContentLabelStyle}" />
+        <Label Text="Курс: 2" Style="{StaticResource ContentLabelStyle}" />
+        <Label Text="Група: К-26" Style="{StaticResource ContentLabelStyle}" />
+        <Label Text="Рік: 2024" Style="{StaticResource ContentLabelStyle}" />
+        <Label Text="Опис: ця програма зчитує json файл і надає доступ на його редагування і додавання нових даних."
+               Style="{StaticResource ContentLabelStyle}" />
+
+        <!-- Кнопка назад -->
+        <Button Text="Назад" Clicked="OnBackClicked" />
     </StackLayout>
 </ContentPage>
